@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+    {% block content %}
+
+      <div class="container py-5"  style="background: url({% static 'img/cars4.png' %}); object-fit: cover; background-repeat: no-repeat; background-position: center;">
+        <div class="col-md-8 offset-2">
+
+        <h1 class="mb-5" style="text-align: center;"><i class="fa fa-address-card" aria-hidden="true"></i>  Create Your Account</h1>
+        
+        
+        <div class="card mb-4" id="forms" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: rgba(255, 255, 255, 0.8);">
+          <div class="card-header">
+            <small>
+            Welcome to Tinga Tinga Hub! We're excited to have you onboard as we revolutionize farming together!
+            </small>
+          </div>
+          <div class="card-body">
+
+            {% include 'partials/_messages.html' %}
+
+            <form method="post" action="">
+              <fieldset>
+                {% csrf_token %}
+
+                {% for fm in form %}
+                    <div class="form-group">
+                        {{fm.label_tag}}
+                        {{fm}}
+                        <small class="text-danger">{{fm.errors|striptags}}</small>
+                    </div>
+                {% endfor %}
+                <button class="btn btn-primary btn-block" type="submit">Submit</button>
+              </fieldset>
+
+              {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <p class="alert alert-danger alert-dismissible fade show" role="alert" my-3">
+                        {{error}}
+                    </p>
+                {% endfor %}
+              {% endif %}
+
+            </form>
+
+            <hr>
+
+            Already have an account? <a href="{% url 'store:login' %}">Log In </a>
+            
+          </div>
+        </div>
+
+        </div>       
+      </div>
+{% endblock content %}

@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    {% load humanize %}
+
+
+<style>
+
+    /* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+    color: #343a40;
+}
+
+.breadcrumb {
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.breadcrumb li {
+    display: inline-block;
+    font-size: 14px;
+}
+
+.breadcrumb a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb .divider {
+    margin: 0 5px;
+    color: #6c757d;
+}
+
+/* Heading Style */
+h3 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+h3 small {
+    font-size: 16px;
+    color: #6c757d;
+}
+
+/* Table Styles */
+#compairTbl {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-left: 110px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#compairTbl thead {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+#compairTbl th, #compairTbl td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+#compairTbl th {
+    font-weight: 600;
+}
+
+#compairTbl td {
+    vertical-align: middle;
+}
+
+/* Image Styling */
+#compairTbl img {
+    max-width: 500px;
+    height: auto;
+    border-radius: 5px;
+    margin: 3px 0;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    font-size: 14px;
+    padding: 10px 20px;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn-large {
+    padding: 12px 25px;
+    font-size: 16px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    #compairTbl {
+        font-size: 14px;
+    }
+
+    #compairTbl img {
+        max-width: 80px;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    .btn-large {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+}
+
+
+</style>
+
+
+<div class="span9" style="margin-bottom: 20px;">
+    <ul class="breadcrumb">
+        <li><a href="{% url 'store:home' %}">Home</a> <span class="divider">/</span></li>
+        <li class="active">Products Comparison</li>
+    </ul>
+    <h3> Product Comparison <small class="pull-right"> *New </small></h3>
+    <hr class="soft"/>
+
+    <form action="{% url 'store:product_comparison' %}" method="POST" class="comparison-form mb-60" style="margin-left: 140px;">
+    {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 col-lg-3 my-3">
+                <div class="select-container">
+                    <select class="custom-select" name="product1">
+                        <option selected="">select product</option>
+                        {% for prod1 in search_products %}
+                        <option value="{{ prod1.id }}" >{{ prod1.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 my-3">
+                <div class="select-container">
+                    <select class="custom-select" name="product2">
+                        <option selected="">select product</option>
+                        {% for prod2 in search_products %}
+                        <option value="{{ prod2.id }}" >{{ prod2.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 my-3">
+                <button type="submit" class="btn btn-lg btn-block btn-light btn-custom" id="contact-submit">
+                    Search
+                </button>
+            </div>
+        </div>
+    </form>
+    <table id="compairTbl" class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Features</th>
+            <th>
+                {% if product1 %}
+                    {{ product1.title }}
+                {% else %}
+                    Select a Product
+                {% endif %}
+            </th>
+
+            <th>
+                {% if product2 %}
+                    {{ product2.title }}
+                {% else %}
+                    Select a Product
+                {% endif %}
+            </th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% if product1 and product2 %}
+            <tr>
+                <td>&nbsp;</td>
+                <td style="text-align:center">
+                    <p class="justify">
+                        {{ product1.detail_description|slice:100|linebreaks }}
+                    </p>
+                    <img src="{{ product1.product_image.url }}" alt="{{ product1.title }}" style="width: inherit; height: 300px; object-fit: cover;"/>
+                    <form class="form-horizontal qtyFrm">
+{#                        <h3>Ksh. {{ product1.price|intcomma }}</h3>#}
+                        <br/>
+{#                        <!-- <a href="{% url 'product_details' product1.id %}" class="btn btn-large btn-primary"> Add to <i class="icon-shopping-cart"></i></a>#}
+{#                        <a href="{% url 'product_details' product1.id %}" class="btn btn-large"><i class="icon-zoom-in"></i></a>-->#}
+                    </form>
+                </td>
+                <td>
+                    <p class="justify">
+                        {{ product2.detail_description|slice:100|linebreaks }}
+                    </p>
+                    <img src="{{ product2.product_image.url }}" alt="{{ product2.title }}" style="width: inherit; height: 300px; object-fit: cover;"/>
+                    <form class="form-horizontal qtyFrm">
+{#                        <h3>Ksh. {{ product2.price }}</h3>#}
+                        <br/>
+{#                        <!--<a href="{% url 'product_details' product2.id %}" class="btn btn-large btn-primary"> Add to <i class="icon-shopping-cart"></i></a>#}
+{#                        <a href="{% url 'product_details' product2.id %}" class="btn btn-large"><i class="icon-zoom-in"></i></a>-->#}
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td>Category</td>
+                <td>{{ product1.category }}</td>
+                <td>{{ product2.category }}</td>
+            </tr>
+            <tr>
+                <td>Location</td>
+                <td>{{ product1.country }}, {{ product1.location }}</td>
+                <td>{{ product2.country }}, {{ product2.location }}</td>
+            </tr>
+            <tr>
+                <td>Dealer</td>
+                <td>{{ product1.seller }}</td>
+                <td>{{ product2.seller }}</td>
+            </tr>
+            <tr>
+                <td>Price</td>
+                <td><strong>Ksh. {{ product1.price|intcomma }}</strong></td>
+                <td><strong>Ksh. {{ product2.price|intcomma }}</strong></td>
+            </tr>
+            <tr>
+                <td>More Details</td>
+                <td>{{ product1.short_description|slice:100|linebreaks }}</td>
+                <td>{{ product2.short_description|slice:100|linebreaks }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3" style="text-align:center;">Please select two products to compare.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'store:home' %}" style="padding-left: 110px;">To homepage</a>
+</div>
+
+
+
+
+
+
+{% endblock content %}

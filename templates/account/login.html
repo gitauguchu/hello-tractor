@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+    {% block content %}
+
+      <div class="container py-5">
+        <div class="col-md-8 offset-2">
+
+        <div class="container" style="padding-bottom: 10px;">
+            <img class="login-img" style="width: 100%" src="{% static 'img/cars2.png' %}" alt="Login Page image">
+        </div>
+
+        <h1 class="mb-5" style="text-align: center;"><i class="fa fa-user" aria-hidden="true"></i>  Sign In</h1>
+        
+        
+        <div class="card mb-4" id="forms" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+          
+          <div class="card-body">
+              
+            {% include 'partials/_messages.html' %}
+
+            <form method="post" action="">
+              <fieldset>
+                {% csrf_token %}
+
+                {% for fm in form %}
+                    <div class="form-group">
+                        {{fm.label_tag}}
+                        {{fm}}
+                        <small class="text-danger">{{fm.errors|striptags}}</small>
+                    </div>
+                {% endfor %}
+                <button class="btn btn-primary btn-block" type="submit">Login</button>
+              </fieldset>
+
+              {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <p class="alert alert-danger my-3">
+                        {{error}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </p>
+                {% endfor %}
+              {% endif %}
+
+
+            </form>
+
+            <hr>
+
+            Forgot Password? <a href="{% url 'store:password-reset' %}">Reset Now</a> <br>
+            New Member? <a href="{% url 'store:register' %}">Create an Account</a> 
+            
+          </div>
+        </div>
+
+        </div>       
+      </div>
+{% endblock content %}
